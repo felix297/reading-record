@@ -1,46 +1,47 @@
-import {calculateDuration} from './util.js'
+import { calculateDuration } from './util.js';
 
-/**
- * 生成数据行、统计阅读数据
- * @param {*} readingRecords 
- */
-function getRows (readingRecords) {
+function createBookCard(record) {
+    return `
+        <div class="book-card">
+            <img src="./image/${record.title}.jpg" alt="${record.title}">
+            <div class="book-title">${record.title}</div>
+            <div class="book-details">
+                <p><strong>作者：</strong>${record.author}</p>
+                <p><strong>类型：</strong>${record.type}</p>
+                <p><strong>开始：</strong>${record.start || '无'}</p>
+                <p><strong>结束：</strong>${record.end || '无'}</p>
+                <p><strong>阅读时长：</strong>${calculateDuration(record.start, record.end) || '未完成'}</p>
+            </div>
+        </div>
+    `;
+}
+
+function getStats(records) {
     const stats = {};
-    let allRows = "";
-    readingRecords.forEach(record => {
-        const duration = calculateDuration(record.start, record.end);
-        allRows += `
-        <tr>
-            <td>${record.title}</td>
-            <td>${record.author}</td>
-            <td>${record.type}</td>
-            <td>${record.start}</td>
-            <td>${record.end}</td>
-            <td>${duration}</td>
-        </tr>`;
-
-        // 统计有完整时长的书
-        if (duration !== "") {
-            const startYear = new Date(record.start).getFullYear();
-            const endYear = new Date(record.end).getFullYear();
+    records.forEach(r => {
+        if (r.start && r.end) {
+            const startYear = new Date(r.start).getFullYear();
+            const endYear = new Date(r.end).getFullYear();
             stats[startYear] = (stats[startYear] || 0) + 1;
             if (startYear !== endYear) {
                 stats[endYear] = (stats[endYear] || 0) + 1;
             }
         }
     });
-    return {allRows, stats}
+    return stats;
 }
 
-export function renderTable(readingRecords) {
-    const tbody = document.getElementById("readingTableBody");
-    tbody.innerHTML = getRows(readingRecords).allRows;
+export function renderBookshelf(readingRecords) {
+    const readingNow = readingRecords.filter(r => r.start && !r.end);
+    const readingDone = readingRecords.filter(r => r.start && r.end);
 
-    // 生成统计文本
-    const stats = getRows(readingRecords).stats;
+    document.getElementById('readingNow').innerHTML = readingNow.map(createBookCard).join('');
+    document.getElementById('readingDone').innerHTML = readingDone.map(createBookCard).join('');
+
+    const stats = getStats(readingDone);
     const statsText = Object.keys(stats)
         .sort((a, b) => a - b)
         .map(year => `${year} 年 ${stats[year]} 本书`)
-        .join("，");
-    document.getElementById("readingStats").textContent = `阅读统计：${statsText}`;
+        .join('，');
+    document.getElementById('readingStats').textContent = `阅读统计：${statsText}`;
 }

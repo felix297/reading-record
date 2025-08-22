@@ -4,24 +4,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>阅读记录</title>
+    <title>我的阅读记录</title>
     <link rel="stylesheet" href="./styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
-    <h1>我的书架</h1>
-    <section>
-        <h2>正在阅读</h2>
-        <div id="readingNow" class="bookshelf"></div>
-    </section>
+    <!-- 头部导航 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-book-open"></i>
+                    <h1>我的书架</h1>
+                </div>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="搜索书籍..." id="searchInput">
+                    </div>
+                    <button class="add-book-btn">
+                        <i class="fas fa-plus"></i>
+                        添加书籍
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
 
-    <section>
-        <h2>已阅读书籍</h2>
-        <div id="readingDone" class="bookshelf"></div>
-    </section>
-    <div class="stats" id="readingStats"></div>
-    <script type="module" src="./script/index.js"></script>
+    <!-- 主要内容 -->
+    <main class="main">
+        <div class="container">
+            <!-- 统计面板 -->
+            <div class="stats-panel">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="readingCount">0</div>
+                        <div class="stat-label">正在阅读</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="completedCount">0</div>
+                        <div class="stat-label">已完成</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="thisYearCount">0</div>
+                        <div class="stat-label">今年阅读</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="avgDays">0</div>
+                        <div class="stat-label">平均天数</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 正在阅读 -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-book-reader"></i>
+                        正在阅读
+                    </h2>
+                    <div class="section-count" id="readingNowCount">0 本</div>
+                </div>
+                <div id="readingNow" class="bookshelf"></div>
+            </section>
+
+            <!-- 已阅读书籍 -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-check-circle"></i>
+                        已阅读书籍
+                    </h2>
+                    <div class="section-count" id="readingDoneCount">0 本</div>
+                </div>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">全部</button>
+                    <button class="filter-tab" data-filter="2025">2025年</button>
+                    <button class="filter-tab" data-filter="2024">2024年</button>
+                    <button class="filter-tab" data-filter="2023">2023年</button>
+                </div>
+                <div id="readingDone" class="bookshelf"></div>
+            </section>
+
+            <!-- 阅读统计 -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-chart-bar"></i>
+                        阅读统计
+                    </h2>
+                </div>
+                <div class="reading-stats">
+                    <div class="stats-chart">
+                        <canvas id="yearlyChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="stats-summary" id="readingStats"></div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 工具提示 -->
     <div id="tooltip" class="tooltip"></div>
+
+    <!-- 加载脚本 -->
+    <script type="module" src="./script/index.js"></script>
 </body>
 
 </html>

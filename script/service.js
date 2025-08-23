@@ -8,30 +8,30 @@ function createBookCard(record) {
     const isReading = record.start && !record.end;
 
     return `
-<div class="book-card" data-title="${record.title}" data-author="${record.author}" data-type="${record.type}">
-<div class="book-cover">
-<img src="./image/${record.title}.jpg" alt="${record.title}" onerror="this.src='./image/default-book.jpg'">
-${isReading ? '<div class="book-progress"><div class="book-progress-bar" style="width: 60%"></div></div>' : ''}
-</div>
-<div class="book-info">
-<div class="book-title">${record.title}</div>
-<div class="book-author">${record.author || '未知作者'}</div>
-<div class="book-meta">
-<span class="book-type">${record.type || '未分类'}</span>
-<span class="book-duration">${duration ? duration + '天' : (isReading ? '阅读中' : '未开始')}</span>
-</div>
-</div>
-<div class="book-details">
-<p><strong>书名：</strong>${record.title}</p>
-<p><strong>作者：</strong>${record.author || '未知'}</p>
-<p><strong>类型：</strong>${record.type || '未分类'}</p>
-<p><strong>开始时间：</strong>${record.start || '未开始'}</p>
-<p><strong>结束时间：</strong>${record.end || (isReading ? '阅读中' : '未开始')}</p>
-<p><strong>阅读时长：</strong>${duration ? duration + '天' : '未完成'}</p>
-${record.note ? `<p><strong>备注：</strong>${record.note}</p>` : ''}
-</div>
-</div>
-`;
+        <div class="book-card" data-title="${record.title}" data-author="${record.author}" data-type="${record.type}">
+            <div class="book-cover">
+                <img src="./image/${record.title}.jpg" alt="${record.title}" onerror="this.src='./image/default-book.jpg'">
+                ${isReading ? '<div class="book-progress"><div class="book-progress-bar" style="width: 60%"></div></div>' : ''}
+            </div>
+            <div class="book-info">
+                <div class="book-title">${record.title}</div>
+                <div class="book-author">${record.author || '未知作者'}</div>
+                <div class="book-meta">
+                    <span class="book-type">${record.type || '未分类'}</span>
+                    <span class="book-duration">${duration ? duration + '天' : (isReading ? '阅读中' : '未开始')}</span>
+                </div>
+            </div>
+            <div class="book-details">
+                <p><strong>书名：</strong>${record.title}</p>
+                <p><strong>作者：</strong>${record.author || '未知'}</p>
+                <p><strong>类型：</strong>${record.type || '未分类'}</p>
+                <p><strong>开始时间：</strong>${record.start || '未开始'}</p>
+                <p><strong>结束时间：</strong>${record.end || (isReading ? '阅读中' : '未开始')}</p>
+                <p><strong>阅读时长：</strong>${duration ? duration + '天' : '未完成'}</p>
+                ${record.note ? `<p><strong>备注：</strong>${record.note}</p>` : ''}
+            </div>
+        </div>
+    `;
 }
 
 function getStats(records) {
@@ -193,11 +193,11 @@ export function renderBookshelf(readingRecords) {
         .join('，');
 
     document.getElementById('readingStats').innerHTML = `
-<h3>年度阅读统计</h3>
-<p>${statsText || '暂无阅读记录'}</p>
-<p>平均阅读时长：${stats.avgDays} 天/本</p>
-<p>今年已阅读：${stats.thisYearCount} 本书</p>
-`;
+        <h3>年度阅读统计</h3>
+        <p>${statsText || '暂无阅读记录'}</p>
+        <p>平均阅读时长：${stats.avgDays} 天/本</p>
+        <p>今年已阅读：${stats.thisYearCount} 本书</p>
+    `;
 
     // 绘制图表
     setTimeout(() => drawYearlyChart(stats), 100);

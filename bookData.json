@@ -169,10 +169,10 @@
   },
   {
     "title": "瓦尔登湖",
-    "author": "",
-    "type": "",
+    "author": "Henry David Thoreau",
+    "type": "成长，散文",
     "start": "2025/9/6",
-    "end": ""
+    "end": "2025/9/28"
   },
   {
     "title": "美丽新世界",
@@ -212,9 +212,9 @@
   },
   {
     "title": "人生的枷锁",
-    "author": "",
-    "type": "",
-    "start": "",
+    "author": "William Somerset Maugham",
+    "type": "成长，探索",
+    "start": "2025/9/29",
     "end": ""
   },
   {
@@ -231,5 +231,45 @@
     "start": "2025/8/25",
     "end": "2025/8/31",
     "note": "2025年6-8暑期推荐书籍</br>有粉丝说：“能不能推点人物传记？” 我再三考量，在我读过的人物传记里，只有乔布斯令人惊叹。</br>别上头，觉得自己来自己也行。记得，乔布斯的ip很关键。</br>乔布斯的精神值得赞叹。"
+  },
+  {
+    "title": "李尔王",
+    "author": "",
+    "type": "",
+    "start": "",
+    "end": "",
+    "note": ""
+  },
+  {
+    "title": "白鲸",
+    "author": "",
+    "type": "",
+    "start": "",
+    "end": "",
+    "note": ""
+  },
+  {
+    "title": "数学之英文写作",
+    "author": "",
+    "type": "",
+    "start": "",
+    "end": "",
+    "note": ""
+  },
+  {
+    "title": "政治经济学概论",
+    "author": "萨伊",
+    "type": "",
+    "start": "",
+    "end": "",
+    "note": ""
+  },
+  {
+    "title": "情人",
+    "author": "玛格丽特·杜拉斯",
+    "type": "",
+    "start": "",
+    "end": "",
+    "note": "译者：王道乾"
   }
 ]

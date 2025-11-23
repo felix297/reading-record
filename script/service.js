@@ -1,5 +1,7 @@
 import { calculateDuration } from './util.js';
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
 let allBooks = [];
 let currentFilter = 'all';
 
@@ -25,13 +27,54 @@ function createBookCard(record) {
                 <p><strong>书名：</strong>${record.title}</p>
                 <p><strong>作者：</strong>${record.author || '未知'}</p>
                 <p><strong>类型：</strong>${record.type || '未分类'}</p>
-                <p><strong>开始时间：</strong>${record.start || '未开始'}</p>
-                <p><strong>结束时间：</strong>${record.end || (isReading ? '阅读中' : '未开始')}</p>
-                <p><strong>阅读时长：</strong>${duration ? duration + '天' : '未完成'}</p>
-                ${record.note ? `<p><strong>备注：</strong>${record.note}</p>` : ''}
+                <p><strong>阅读期间：</strong>${record.start || '未开始'} ~ ${record.end || (isReading ? '' : '')}${duration ? `，${duration} 天`: ''}</p>
             </div>
         </div>
     `;
+}
+
+function formatCount(value) {
+    return Number.isInteger(value) ? value : value.toFixed(2);
+}
+
+function calculateThisMonthCount(records) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+    const monthStart = new Date(currentYear, currentMonth, 1).getTime();
+    const nextMonthStart = new Date(currentYear, currentMonth + 1, 1).getTime();
+    let total = 0;
+
+    records.forEach(r => {
+        if (!r.start || !r.end) return;
+
+        const startDate = new Date(r.start);
+        const endDate = new Date(r.end);
+        if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) return;
+
+        const startInMonth = startDate.getFullYear() === currentYear && startDate.getMonth() === currentMonth;
+        const endInMonth = endDate.getFullYear() === currentYear && endDate.getMonth() === currentMonth;
+
+        if (startInMonth && endInMonth) {
+            total += 1;
+            return;
+        }
+
+        if (!startInMonth && endInMonth) {
+            const totalDays = (endDate.getTime() - startDate.getTime()) / DAY_MS;
+            if (totalDays <= 0) return;
+
+            const overlapStart = Math.max(startDate.getTime(), monthStart);
+            const overlapEnd = Math.min(endDate.getTime(), nextMonthStart);
+            const monthDays = Math.max(0, overlapEnd - overlapStart) / DAY_MS;
+
+            if (monthDays > 0) {
+                total += monthDays / totalDays;
+            }
+        }
+    });
+
+    return Math.round(total * 100) / 100;
 }
 
 function getStats(records) {
@@ -57,10 +100,13 @@ function getStats(records) {
         }
     });
 
+    const thisMonthCount = calculateThisMonthCount(records);
+
     return {
         yearlyStats: stats,
         avgDays: completedBooks > 0 ? Math.round(totalDays / completedBooks) : 0,
-        thisYearCount: stats[currentYear] || 0
+        thisYearCount: stats[currentYear] || 0,
+        thisMonthCount
     };
 }
 
@@ -68,12 +114,17 @@ function updateStatistics(readingRecords) {
     const readingNow = readingRecords.filter(r => r.start && !r.end);
     const readingDone = readingRecords.filter(r => r.start && r.end);
     const stats = getStats(readingDone);
+    const thisMonthCountText = formatCount(stats.thisMonthCount);
 
     // 更新统计卡片
     document.getElementById('readingCount').textContent = readingNow.length;
     document.getElementById('completedCount').textContent = readingDone.length;
     document.getElementById('thisYearCount').textContent = stats.thisYearCount;
     document.getElementById('avgDays').textContent = stats.avgDays;
+    const thisMonthCountElement = document.getElementById('thisMonthCount');
+    if (thisMonthCountElement) {
+        thisMonthCountElement.textContent = thisMonthCountText;
+    }
 
     // 更新章节计数
     document.getElementById('readingNowCount').textContent = `${readingNow.length} 本`;
@@ -82,7 +133,7 @@ function updateStatistics(readingRecords) {
 
 function filterBooks(filter) {
     currentFilter = filter;
-    const readingDone = allBooks.filter(r => r.start && r.end);
+    const readingDone = sortByStart(allBooks.filter(r => r.start && r.end));
 
     let filteredBooks = readingDone;
     if (filter !== 'all') {
@@ -172,11 +223,22 @@ function drawYearlyChart(stats) {
     });
 }
 
+//按开始阅读时间排序阅读记录数据
+function sortByStart (books) {
+    return books.sort((book1, book2) => {
+        const book1StartData = new Date(book1.start);;
+        const book2StartData = new Date(book2.start);;
+        if (book1StartData < book2StartData) return 1;
+        if (book1StartData > book2StartData) return -1;
+        return 0;
+    });
+}
+
 export function renderBookshelf(readingRecords) {
     allBooks = readingRecords;
 
-    const readingNow = readingRecords.filter(r => r.start && !r.end);
-    const readingDone = readingRecords.filter(r => r.start && r.end);
+    const readingNow = sortByStart(readingRecords.filter(r => r.start && !r.end));
+    const readingDone = sortByStart(readingRecords.filter(r => r.start && r.end));
 
     // 渲染书架
     document.getElementById('readingNow').innerHTML = readingNow.map(createBookCard).join('');
@@ -187,6 +249,7 @@ export function renderBookshelf(readingRecords) {
 
     // 生成统计文本
     const stats = getStats(readingDone);
+    const thisMonthCountText = formatCount(stats.thisMonthCount);
     const statsText = Object.keys(stats.yearlyStats)
         .sort((a, b) => a - b)
         .map(year => `${year} 年阅读了 ${stats.yearlyStats[year]} 本书`)
@@ -197,9 +260,11 @@ export function renderBookshelf(readingRecords) {
         <p>${statsText || '暂无阅读记录'}</p>
         <p>平均阅读时长：${stats.avgDays} 天/本</p>
         <p>今年已阅读：${stats.thisYearCount} 本书</p>
+        <p>本月读完：${thisMonthCountText} 本书</p>
     `;
 
-    // 绘制图表
+    
+// 绘制图表
     setTimeout(() => drawYearlyChart(stats), 100);
 
     // 设置事件监听

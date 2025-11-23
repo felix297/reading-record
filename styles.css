@@ -50,7 +50,7 @@ body {
 .logo i {
     font-size: 2rem;
     color: #ff6b35;
-    animation: bookFlip 3s ease-in-out infinite;
+    /* animation: bookFlip 3s ease-in-out infinite; */
 }
 
 @keyframes bookFlip {
@@ -136,7 +136,7 @@ body {
 /* 统计面板 */
 .stats-panel {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
     margin-bottom: 3rem;
 }
